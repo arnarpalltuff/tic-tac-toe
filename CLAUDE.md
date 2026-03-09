@@ -24,4 +24,5 @@ Everything lives in `tictactoe.html`:
 
 - Remote: `https://github.com/arnarpalltuff/tic-tac-toe` (public)
 - `gh` CLI is installed at `~/bin/gh` (not on system PATH — use full path or add `~/bin` to PATH)
-- Always commit with clean, descriptive messages and push after each meaningful change
+- Git user: `arnarpalltuff` / `arnarpalltuff@users.noreply.github.com` (configured locally)
+- Commit and push after every meaningful change using clean, descriptive messages

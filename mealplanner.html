@@ -1,0 +1,2504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlatePal — Smart Meal Planner</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #22c55e;
+      --primary-dark: #16a34a;
+      --primary-light: #bbf7d0;
+      --accent: #f97316;
+      --accent-light: #fed7aa;
+      --bg: #fafaf9;
+      --bg-card: #ffffff;
+      --bg-dark: #0f172a;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --text-lighter: #94a3b8;
+      --border: #e2e8f0;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 16px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ===== HEADER / NAV ===== */
+    header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: var(--primary-dark);
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--primary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: white;
+    }
+
+    nav {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    nav button {
+      background: none;
+      border: none;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-light);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    nav button:hover { background: #f1f5f9; color: var(--text); }
+    nav button.active { background: var(--primary-light); color: var(--primary-dark); font-weight: 600; }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1.2rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+    .btn-secondary {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: #f1f5f9; }
+
+    .btn-accent {
+      background: var(--accent);
+      color: white;
+    }
+    .btn-accent:hover { background: #ea580c; }
+
+    .btn-ghost {
+      background: none;
+      color: var(--text-light);
+      padding: 0.5rem;
+    }
+    .btn-ghost:hover { background: #f1f5f9; color: var(--text); }
+
+    .btn-lg { padding: 0.75rem 1.5rem; font-size: 1rem; }
+    .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+
+    /* ===== MAIN LAYOUT ===== */
+    .app-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ===== HERO / ONBOARDING ===== */
+    .hero {
+      text-align: center;
+      padding: 4rem 1rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-light);
+      margin-bottom: 2rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .hero-feature {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .hero-feature .icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-feature h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .hero-feature p {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      margin: 0;
+    }
+
+    /* ===== ONBOARDING FORM ===== */
+    .onboarding {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 2rem 0;
+    }
+
+    .onboarding-step {
+      display: none;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .onboarding-step.active { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-header {
+      margin-bottom: 2rem;
+    }
+
+    .step-counter {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+
+    .step-header h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    .step-header p {
+      color: var(--text-light);
+      margin-top: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--bg-card);
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+    }
+
+    /* Chip selector */
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .chip {
+      padding: 0.45rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg-card);
+      color: var(--text);
+      font-family: inherit;
+    }
+
+    .chip:hover { border-color: var(--primary); }
+    .chip.selected { background: var(--primary-light); border-color: var(--primary); color: var(--primary-dark); font-weight: 600; }
+
+    .step-nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    /* ===== DASHBOARD ===== */
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .dashboard-header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .week-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .week-nav span {
+      font-weight: 600;
+      font-size: 0.95rem;
+      min-width: 160px;
+      text-align: center;
+    }
+
+    /* Summary cards row */
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .summary-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .summary-card .label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .summary-card .value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-top: 0.25rem;
+    }
+
+    .summary-card .sub {
+      font-size: 0.8rem;
+      color: var(--text-lighter);
+      margin-top: 0.15rem;
+    }
+
+    .summary-card.budget .value { color: var(--primary-dark); }
+    .summary-card.calories .value { color: #ef4444; }
+    .summary-card.meals .value { color: var(--accent); }
+    .summary-card.saved .value { color: #8b5cf6; }
+
+    /* Meal plan grid */
+    .meal-plan-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .day-column {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .day-header {
+      background: #f8fafc;
+      padding: 0.75rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .day-header .day-name {
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .day-header .day-date {
+      font-size: 0.7rem;
+      color: var(--text-lighter);
+    }
+
+    .day-header.today {
+      background: var(--primary);
+      color: white;
+    }
+
+    .day-header.today .day-date { color: rgba(255,255,255,0.8); }
+
+    .meal-slot {
+      padding: 0.6rem;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.15s;
+      min-height: 85px;
+    }
+
+    .meal-slot:last-child { border-bottom: none; }
+    .meal-slot:hover { background: #f8fafc; }
+
+    .meal-slot .meal-type {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-lighter);
+      margin-bottom: 0.3rem;
+    }
+
+    .meal-slot .meal-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 0.2rem;
+    }
+
+    .meal-slot .meal-meta {
+      font-size: 0.7rem;
+      color: var(--text-light);
+    }
+
+    .meal-slot .meal-tags {
+      display: flex;
+      gap: 0.25rem;
+      margin-top: 0.3rem;
+      flex-wrap: wrap;
+    }
+
+    .meal-tag {
+      font-size: 0.6rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 50px;
+      font-weight: 600;
+    }
+
+    .meal-tag.leftover { background: #fef3c7; color: #92400e; }
+    .meal-tag.quick { background: #dbeafe; color: #1e40af; }
+    .meal-tag.budget { background: #d1fae5; color: #065f46; }
+
+    .meal-slot.empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-lighter);
+      font-size: 0.8rem;
+    }
+
+    .meal-slot.empty:hover { color: var(--primary); }
+
+    /* ===== GROCERY LIST ===== */
+    .grocery-container {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 1.5rem;
+    }
+
+    .grocery-list {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .grocery-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .grocery-header h3 { font-size: 1.1rem; }
+
+    .aisle-section {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .aisle-section:last-child { border-bottom: none; }
+
+    .aisle-header {
+      padding: 0.75rem 1.25rem;
+      background: #f8fafc;
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .aisle-header .aisle-icon { font-size: 1.1rem; }
+    .aisle-header .count {
+      margin-left: auto;
+      background: var(--border);
+      padding: 0.1rem 0.5rem;
+      border-radius: 50px;
+      font-size: 0.7rem;
+      color: var(--text-light);
+    }
+
+    .grocery-item {
+      padding: 0.6rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: background 0.15s;
+    }
+
+    .grocery-item:hover { background: #f8fafc; }
+
+    .grocery-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .grocery-item.checked .item-name {
+      text-decoration: line-through;
+      color: var(--text-lighter);
+    }
+
+    .item-name {
+      flex: 1;
+      font-size: 0.9rem;
+    }
+
+    .item-qty {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    .item-price {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+      min-width: 45px;
+      text-align: right;
+    }
+
+    /* Grocery sidebar */
+    .grocery-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar-card h4 {
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .budget-bar {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+
+    .budget-bar-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .budget-bar-fill.over { background: #ef4444; }
+
+    .budget-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+
+    .budget-text .amount { font-weight: 700; color: var(--text); }
+
+    .nutrition-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .nutrition-item {
+      text-align: center;
+      padding: 0.5rem;
+      background: #f8fafc;
+      border-radius: var(--radius-sm);
+    }
+
+    .nutrition-item .n-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .nutrition-item .n-label {
+      font-size: 0.65rem;
+      color: var(--text-lighter);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .nutrition-item.cal .n-value { color: #ef4444; }
+    .nutrition-item.protein .n-value { color: #3b82f6; }
+    .nutrition-item.carbs .n-value { color: var(--accent); }
+    .nutrition-item.fat .n-value { color: #8b5cf6; }
+
+    /* ===== PANTRY / FRIDGE PAGE ===== */
+    .pantry-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .pantry-category {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .pantry-category h4 {
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .pantry-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .pantry-item:last-child { border-bottom: none; }
+
+    .pantry-item-name {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .pantry-item-expiry {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 50px;
+    }
+
+    .expiry-ok { background: #d1fae5; color: #065f46; }
+    .expiry-soon { background: #fef3c7; color: #92400e; }
+    .expiry-expired { background: #fecaca; color: #991b1b; }
+
+    .add-pantry-input {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .add-pantry-input input {
+      flex: 1;
+      padding: 0.45rem 0.7rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+
+    /* ===== RECIPE MODAL ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      max-width: 650px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      background: linear-gradient(135deg, #d1fae5, #bbf7d0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-body h2 {
+      font-size: 1.4rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .modal-body .recipe-subtitle {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .recipe-stats {
+      display: flex;
+      gap: 1.5rem;
+      padding: 1rem 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+
+    .recipe-stat {
+      text-align: center;
+    }
+
+    .recipe-stat .stat-value {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .recipe-stat .stat-label {
+      font-size: 0.7rem;
+      color: var(--text-lighter);
+      text-transform: uppercase;
+    }
+
+    .recipe-section {
+      margin-bottom: 1.25rem;
+    }
+
+    .recipe-section h3 {
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .ingredient-list {
+      list-style: none;
+    }
+
+    .ingredient-list li {
+      padding: 0.35rem 0;
+      border-bottom: 1px solid #f8fafc;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .ingredient-list li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--primary);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .instruction-list {
+      list-style: none;
+      counter-reset: step;
+    }
+
+    .instruction-list li {
+      counter-increment: step;
+      padding: 0.5rem 0;
+      padding-left: 2rem;
+      position: relative;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .instruction-list li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+      z-index: 1;
+    }
+
+    /* ===== SETTINGS PAGE ===== */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .settings-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .settings-section h3 {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+    }
+
+    .setting-row .setting-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .setting-row .setting-desc {
+      font-size: 0.75rem;
+      color: var(--text-lighter);
+    }
+
+    /* Toggle switch */
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: #cbd5e1;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .toggle.on { background: var(--primary); }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    }
+
+    .toggle.on::after { transform: translateX(20px); }
+
+    /* ===== PRICING PAGE ===== */
+    .pricing-container {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 2rem 0;
+    }
+
+    .pricing-container h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .pricing-container > p {
+      color: var(--text-light);
+      margin-bottom: 2.5rem;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      text-align: left;
+    }
+
+    .pricing-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .pricing-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+    .pricing-card.popular {
+      border-color: var(--primary);
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: white;
+      padding: 0.2rem 1rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .pricing-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .pricing-card .price {
+      font-size: 2.5rem;
+      font-weight: 800;
+    }
+
+    .pricing-card .price span {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--text-light);
+    }
+
+    .pricing-card .price-desc {
+      color: var(--text-light);
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+
+    .pricing-features li {
+      padding: 0.4rem 0;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .pricing-features li::before {
+      content: '\2713';
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .pricing-card .btn { width: 100%; justify-content: center; }
+
+    /* ===== LOADING / AI SPINNER ===== */
+    .ai-generating {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      gap: 1rem;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .ai-generating p {
+      color: var(--text-light);
+      font-size: 0.95rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .meal-plan-grid { grid-template-columns: repeat(4, 1fr); }
+      .summary-cards { grid-template-columns: repeat(2, 1fr); }
+      .grocery-container { grid-template-columns: 1fr; }
+      .settings-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2rem; }
+      .hero-features { grid-template-columns: 1fr; }
+      .meal-plan-grid { grid-template-columns: repeat(2, 1fr); }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .header-inner { flex-wrap: wrap; height: auto; padding: 0.75rem 0; gap: 0.5rem; }
+      nav { order: 3; width: 100%; overflow-x: auto; }
+    }
+
+    @media (max-width: 480px) {
+      .meal-plan-grid { grid-template-columns: 1fr; }
+      .summary-cards { grid-template-columns: 1fr; }
+    }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--bg-dark);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 300;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="header-inner">
+      <a class="logo" href="#" onclick="showPage(isSetUp ? 'dashboard' : 'landing')">
+        <div class="logo-icon">P</div>
+        PlatePal
+      </a>
+      <nav id="mainNav" style="display:none;">
+        <button onclick="showPage('dashboard')" data-page="dashboard">Meal Plan</button>
+        <button onclick="showPage('grocery')" data-page="grocery">Grocery List</button>
+        <button onclick="showPage('pantry')" data-page="pantry">My Pantry</button>
+        <button onclick="showPage('favorites')" data-page="favorites">Favorites</button>
+        <button onclick="showPage('settings')" data-page="settings">Settings</button>
+      </nav>
+      <div class="header-actions" id="headerActions">
+        <button class="btn btn-secondary" onclick="showPage('pricing')">Pricing</button>
+        <button class="btn btn-primary" onclick="showPage('onboarding')">Get Started</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-container">
+
+    <!-- ===== LANDING PAGE ===== -->
+    <div class="page active" id="page-landing">
+      <div class="hero">
+        <h1>Meal planning that actually works</h1>
+        <p>AI-powered weekly meal plans, smart grocery lists, and budget tracking. Save time, eat better, waste less.</p>
+        <div style="display:flex;gap:0.75rem;justify-content:center;">
+          <button class="btn btn-primary btn-lg" onclick="showPage('onboarding')">Start Free Trial</button>
+          <button class="btn btn-secondary btn-lg" onclick="showPage('pricing')">See Pricing</button>
+        </div>
+
+        <div class="hero-features">
+          <div class="hero-feature">
+            <div class="icon">&#129367;</div>
+            <h3>Smart Meal Plans</h3>
+            <p>AI creates personalized weekly plans based on your diet, budget, and what's in your fridge</p>
+          </div>
+          <div class="hero-feature">
+            <div class="icon">&#128722;</div>
+            <h3>Auto Grocery Lists</h3>
+            <p>Organized by aisle, with prices. One-tap export to Instacart, Walmart, or Amazon Fresh</p>
+          </div>
+          <div class="hero-feature">
+            <div class="icon">&#128176;</div>
+            <h3>Budget Tracking</h3>
+            <p>Set a weekly grocery budget and watch the AI keep your meals delicious AND affordable</p>
+          </div>
+        </div>
+
+        <div class="hero-features" style="margin-top:1.5rem;">
+          <div class="hero-feature">
+            <div class="icon">&#127869;</div>
+            <h3>Leftover Magic</h3>
+            <p>Sunday's roast becomes Monday's tacos. Zero waste, maximum flavor</p>
+          </div>
+          <div class="hero-feature">
+            <div class="icon">&#128106;</div>
+            <h3>Family-Aware</h3>
+            <p>Mixed diets? Picky eaters? We handle it all in one plan</p>
+          </div>
+          <div class="hero-feature">
+            <div class="icon">&#127793;</div>
+            <h3>Fridge Tracker</h3>
+            <p>Track what you have. We'll use it before it expires</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ONBOARDING ===== -->
+    <div class="page" id="page-onboarding">
+      <div class="onboarding">
+        <div class="progress-bar">
+          <div class="progress-bar-fill" id="progressFill" style="width:25%"></div>
+        </div>
+
+        <!-- Step 1: Household -->
+        <div class="onboarding-step active" data-step="1">
+          <div class="step-header">
+            <div class="step-counter">Step 1 of 4</div>
+            <h2>Tell us about your household</h2>
+            <p>We'll customize portions and variety for everyone</p>
+          </div>
+          <div class="form-group">
+            <label>How many people are you cooking for?</label>
+            <div class="chip-group" data-field="household-size">
+              <button class="chip" data-value="1">Just me</button>
+              <button class="chip selected" data-value="2">2 people</button>
+              <button class="chip" data-value="3">3 people</button>
+              <button class="chip" data-value="4">4 people</button>
+              <button class="chip" data-value="5+">5+ people</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Any kids? (portions will be adjusted)</label>
+            <div class="chip-group" data-field="kids">
+              <button class="chip selected" data-value="none">No kids</button>
+              <button class="chip" data-value="toddler">Toddler (1-3)</button>
+              <button class="chip" data-value="young">Young (4-8)</button>
+              <button class="chip" data-value="older">Older (9-12)</button>
+              <button class="chip" data-value="teen">Teens</button>
+            </div>
+          </div>
+          <div class="step-nav">
+            <div></div>
+            <button class="btn btn-primary" onclick="nextStep(2)">Continue</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Diet -->
+        <div class="onboarding-step" data-step="2">
+          <div class="step-header">
+            <div class="step-counter">Step 2 of 4</div>
+            <h2>Dietary preferences</h2>
+            <p>Select all that apply. We'll make sure every meal fits.</p>
+          </div>
+          <div class="form-group">
+            <label>Diet type</label>
+            <div class="chip-group" data-field="diet">
+              <button class="chip selected" data-value="none">No restrictions</button>
+              <button class="chip" data-value="vegetarian">Vegetarian</button>
+              <button class="chip" data-value="vegan">Vegan</button>
+              <button class="chip" data-value="keto">Keto</button>
+              <button class="chip" data-value="paleo">Paleo</button>
+              <button class="chip" data-value="mediterranean">Mediterranean</button>
+              <button class="chip" data-value="low-carb">Low Carb</button>
+              <button class="chip" data-value="gluten-free">Gluten Free</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Allergies or dislikes</label>
+            <div class="chip-group" data-field="allergies">
+              <button class="chip" data-value="dairy">Dairy</button>
+              <button class="chip" data-value="nuts">Nuts</button>
+              <button class="chip" data-value="shellfish">Shellfish</button>
+              <button class="chip" data-value="eggs">Eggs</button>
+              <button class="chip" data-value="soy">Soy</button>
+              <button class="chip" data-value="fish">Fish</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Anything else you don't eat?</label>
+            <input type="text" placeholder="e.g., mushrooms, olives, cilantro...">
+          </div>
+          <div class="step-nav">
+            <button class="btn btn-secondary" onclick="nextStep(1)">Back</button>
+            <button class="btn btn-primary" onclick="nextStep(3)">Continue</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Budget & Goals -->
+        <div class="onboarding-step" data-step="3">
+          <div class="step-header">
+            <div class="step-counter">Step 3 of 4</div>
+            <h2>Budget & nutrition goals</h2>
+            <p>Set your weekly budget and we'll find delicious meals that fit</p>
+          </div>
+          <div class="form-group">
+            <label>Weekly grocery budget</label>
+            <div class="chip-group" data-field="budget">
+              <button class="chip" data-value="50">$50</button>
+              <button class="chip" data-value="75">$75</button>
+              <button class="chip selected" data-value="100">$100</button>
+              <button class="chip" data-value="125">$125</button>
+              <button class="chip" data-value="150">$150</button>
+              <button class="chip" data-value="200">$200+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Cooking skill level</label>
+            <div class="chip-group" data-field="skill">
+              <button class="chip" data-value="beginner">Beginner</button>
+              <button class="chip selected" data-value="intermediate">Intermediate</button>
+              <button class="chip" data-value="advanced">Advanced</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Max cooking time on weeknights</label>
+            <div class="chip-group" data-field="time">
+              <button class="chip" data-value="15">15 min</button>
+              <button class="chip selected" data-value="30">30 min</button>
+              <button class="chip" data-value="45">45 min</button>
+              <button class="chip" data-value="60">60 min</button>
+              <button class="chip" data-value="any">No limit</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Nutrition priority</label>
+            <div class="chip-group" data-field="nutrition-goal">
+              <button class="chip selected" data-value="balanced">Balanced</button>
+              <button class="chip" data-value="high-protein">High Protein</button>
+              <button class="chip" data-value="low-calorie">Low Calorie</button>
+              <button class="chip" data-value="muscle-gain">Muscle Gain</button>
+            </div>
+          </div>
+          <div class="step-nav">
+            <button class="btn btn-secondary" onclick="nextStep(2)">Back</button>
+            <button class="btn btn-primary" onclick="nextStep(4)">Continue</button>
+          </div>
+        </div>
+
+        <!-- Step 4: Meals per day -->
+        <div class="onboarding-step" data-step="4">
+          <div class="step-header">
+            <div class="step-counter">Step 4 of 4</div>
+            <h2>Which meals do you want planned?</h2>
+            <p>We'll generate a full week of meals for you</p>
+          </div>
+          <div class="form-group">
+            <label>Plan these meals for me</label>
+            <div class="chip-group" data-field="meals">
+              <button class="chip" data-value="breakfast">Breakfast</button>
+              <button class="chip" data-value="lunch">Lunch</button>
+              <button class="chip selected" data-value="dinner">Dinner</button>
+              <button class="chip" data-value="snacks">Snacks</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Cuisine preferences (select your favorites)</label>
+            <div class="chip-group" data-field="cuisines">
+              <button class="chip selected" data-value="american">American</button>
+              <button class="chip selected" data-value="italian">Italian</button>
+              <button class="chip selected" data-value="mexican">Mexican</button>
+              <button class="chip" data-value="asian">Asian</button>
+              <button class="chip" data-value="indian">Indian</button>
+              <button class="chip" data-value="mediterranean">Mediterranean</button>
+              <button class="chip" data-value="thai">Thai</button>
+              <button class="chip" data-value="japanese">Japanese</button>
+              <button class="chip" data-value="french">French</button>
+              <button class="chip" data-value="middle-eastern">Middle Eastern</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Leftover strategy</label>
+            <div class="chip-group" data-field="leftovers">
+              <button class="chip selected" data-value="repurpose">Repurpose into new meals</button>
+              <button class="chip" data-value="same">Eat as-is next day</button>
+              <button class="chip" data-value="none">No leftovers</button>
+            </div>
+          </div>
+          <div class="step-nav">
+            <button class="btn btn-secondary" onclick="nextStep(3)">Back</button>
+            <button class="btn btn-primary btn-lg" onclick="generatePlan()">Generate My Meal Plan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== AI GENERATING ===== -->
+    <div class="page" id="page-generating">
+      <div class="ai-generating">
+        <div class="spinner"></div>
+        <p id="genText">Analyzing your preferences...</p>
+      </div>
+    </div>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="page" id="page-dashboard">
+      <div class="dashboard-header">
+        <h2>Your Meal Plan</h2>
+        <div style="display:flex;gap:0.75rem;align-items:center;">
+          <div class="week-nav">
+            <button class="btn btn-ghost" onclick="changeWeek(-1)">&#8592;</button>
+            <span id="weekLabel">This Week</span>
+            <button class="btn btn-ghost" onclick="changeWeek(1)">&#8594;</button>
+          </div>
+          <button class="btn btn-primary" onclick="regeneratePlan()">Regenerate Plan</button>
+        </div>
+      </div>
+
+      <div class="summary-cards">
+        <div class="summary-card budget">
+          <div class="label">Weekly Budget</div>
+          <div class="value">$87</div>
+          <div class="sub">$13 under budget</div>
+        </div>
+        <div class="summary-card calories">
+          <div class="label">Avg Daily Calories</div>
+          <div class="value">1,850</div>
+          <div class="sub">Target: 2,000</div>
+        </div>
+        <div class="summary-card meals">
+          <div class="label">Meals Planned</div>
+          <div class="value">21</div>
+          <div class="sub">7 days &times; 3 meals</div>
+        </div>
+        <div class="summary-card saved">
+          <div class="label">Time Saved</div>
+          <div class="value">4.5h</div>
+          <div class="sub">vs. planning manually</div>
+        </div>
+      </div>
+
+      <div class="meal-plan-grid" id="mealPlanGrid">
+        <!-- Generated by JS -->
+      </div>
+    </div>
+
+    <!-- ===== GROCERY LIST ===== -->
+    <div class="page" id="page-grocery">
+      <div class="dashboard-header">
+        <h2>Grocery List</h2>
+        <div style="display:flex;gap:0.75rem;">
+          <button class="btn btn-secondary" onclick="printGroceryList()">Print List</button>
+          <button class="btn btn-secondary" onclick="copyGroceryList()">Copy List</button>
+          <button class="btn btn-accent" onclick="toast('Opening Instacart...')">Order on Instacart</button>
+        </div>
+      </div>
+
+      <div class="grocery-container">
+        <div class="grocery-list" id="groceryList">
+          <!-- Generated by JS -->
+        </div>
+
+        <div class="grocery-sidebar">
+          <div class="sidebar-card">
+            <h4>Budget Tracker</h4>
+            <div class="budget-bar">
+              <div class="budget-bar-fill" style="width:87%"></div>
+            </div>
+            <div class="budget-text">
+              <span>Estimated: <span class="amount">$87.30</span></span>
+              <span>Budget: <span class="amount">$100</span></span>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h4>Daily Avg Nutrition</h4>
+            <div class="nutrition-grid">
+              <div class="nutrition-item cal">
+                <div class="n-value">1,850</div>
+                <div class="n-label">Calories</div>
+              </div>
+              <div class="nutrition-item protein">
+                <div class="n-value">95g</div>
+                <div class="n-label">Protein</div>
+              </div>
+              <div class="nutrition-item carbs">
+                <div class="n-value">210g</div>
+                <div class="n-label">Carbs</div>
+              </div>
+              <div class="nutrition-item fat">
+                <div class="n-value">68g</div>
+                <div class="n-label">Fat</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h4>Smart Tips</h4>
+            <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:0.5rem;">
+              Buy whole chicken instead of breasts — saves $4.20 this week and you can use the bones for broth on Thursday.
+            </p>
+            <p style="font-size:0.85rem;color:var(--text-light);">
+              Bell peppers are in season — swapped for imported asparagus, saving $3.50.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PANTRY ===== -->
+    <div class="page" id="page-pantry">
+      <div class="dashboard-header">
+        <h2>My Pantry & Fridge</h2>
+        <button class="btn btn-primary" onclick="toast('Use items first mode activated!')">Use These First</button>
+      </div>
+      <p style="color:var(--text-light);margin-bottom:1.5rem;">Track what you have. We'll prioritize using these ingredients in your meal plan.</p>
+
+      <div class="pantry-grid" id="pantryGrid">
+        <!-- Generated by JS -->
+      </div>
+    </div>
+
+    <!-- ===== FAVORITES ===== -->
+    <div class="page" id="page-favorites">
+      <div class="dashboard-header">
+        <h2>My Favorites</h2>
+      </div>
+      <div class="pantry-grid" id="favoritesGrid">
+        <p style="color:var(--text-light);text-align:center;padding:2rem;">No favorites yet. Click the heart on any recipe to save it here.</p>
+      </div>
+    </div>
+
+    <!-- ===== SETTINGS ===== -->
+    <div class="page" id="page-settings">
+      <div class="dashboard-header">
+        <h2>Settings</h2>
+        <button class="btn btn-primary" onclick="toast('Settings saved!')">Save Changes</button>
+      </div>
+
+      <div class="settings-grid">
+        <div class="settings-section">
+          <h3>Meal Preferences</h3>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Include breakfast</div>
+              <div class="setting-desc">Generate breakfast meals</div>
+            </div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Include lunch</div>
+              <div class="setting-desc">Generate lunch meals</div>
+            </div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Include dinner</div>
+              <div class="setting-desc">Generate dinner meals</div>
+            </div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Include snacks</div>
+              <div class="setting-desc">Generate snack suggestions</div>
+            </div>
+            <div class="toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Leftover repurposing</div>
+              <div class="setting-desc">Transform yesterday's meals into new dishes</div>
+            </div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>Budget & Shopping</h3>
+          <div class="form-group">
+            <label>Weekly grocery budget</label>
+            <input type="number" value="100" style="max-width:150px;">
+          </div>
+          <div class="form-group">
+            <label>Preferred store</label>
+            <select>
+              <option>Any store</option>
+              <option>Whole Foods</option>
+              <option>Trader Joe's</option>
+              <option>Walmart</option>
+              <option>Kroger</option>
+              <option>Costco</option>
+              <option>Aldi</option>
+            </select>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Show estimated prices</div>
+              <div class="setting-desc">Display price estimates on grocery list</div>
+            </div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Prefer seasonal produce</div>
+              <div class="setting-desc">Prioritize in-season ingredients (cheaper + fresher)</div>
+            </div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>Notifications</h3>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Weekly plan ready</div>
+              <div class="setting-desc">Get notified when your new plan is ready</div>
+            </div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Expiring ingredients</div>
+              <div class="setting-desc">Alerts when pantry items are expiring soon</div>
+            </div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Prep reminders</div>
+              <div class="setting-desc">Remind to prep meals the night before</div>
+            </div>
+            <div class="toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>Appearance</h3>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Dark mode</div>
+              <div class="setting-desc">Switch to dark theme</div>
+            </div>
+            <div class="toggle" id="darkModeToggle" onclick="toggleDarkMode();this.classList.toggle('on')"></div>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Reset all data</div>
+              <div class="setting-desc">Clear saved preferences and start over</div>
+            </div>
+            <button class="btn btn-secondary btn-sm" style="color:#ef4444;" onclick="if(confirm('Reset everything?')){localStorage.clear();location.reload();}">Reset</button>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>Account</h3>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" value="user@example.com">
+          </div>
+          <div class="form-group">
+            <label>Plan</label>
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+              <span style="font-weight:600;color:var(--primary-dark);">Pro Plan — $9.99/mo</span>
+              <button class="btn btn-secondary btn-sm">Manage</button>
+            </div>
+          </div>
+          <div style="margin-top:1rem;">
+            <button class="btn btn-secondary" style="color:#ef4444;">Delete Account</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PRICING ===== -->
+    <div class="page" id="page-pricing">
+      <div class="pricing-container">
+        <h2>Simple, honest pricing</h2>
+        <p>Start free. Upgrade when you're hooked.</p>
+
+        <div class="pricing-grid">
+          <div class="pricing-card">
+            <h3>Free</h3>
+            <div class="price">$0<span>/mo</span></div>
+            <div class="price-desc">Perfect for trying it out</div>
+            <ul class="pricing-features">
+              <li>3 dinner plans per week</li>
+              <li>Basic grocery list</li>
+              <li>1 cuisine type</li>
+              <li>Community recipes</li>
+            </ul>
+            <button class="btn btn-secondary" onclick="showPage('onboarding')">Get Started</button>
+          </div>
+
+          <div class="pricing-card popular">
+            <div class="pricing-badge">Most Popular</div>
+            <h3>Pro</h3>
+            <div class="price">$9.99<span>/mo</span></div>
+            <div class="price-desc">For serious home cooks</div>
+            <ul class="pricing-features">
+              <li>Unlimited meal plans</li>
+              <li>All meals (breakfast, lunch, dinner, snacks)</li>
+              <li>Smart grocery list with prices</li>
+              <li>Budget optimization</li>
+              <li>Leftover repurposing</li>
+              <li>Pantry tracking</li>
+              <li>All cuisines</li>
+              <li>Nutritional tracking</li>
+              <li>Instacart / Amazon Fresh export</li>
+            </ul>
+            <button class="btn btn-primary" onclick="showPage('onboarding')">Start 14-Day Free Trial</button>
+          </div>
+
+          <div class="pricing-card">
+            <h3>Family</h3>
+            <div class="price">$14.99<span>/mo</span></div>
+            <div class="price-desc">For the whole household</div>
+            <ul class="pricing-features">
+              <li>Everything in Pro</li>
+              <li>Up to 6 family members</li>
+              <li>Per-person diet customization</li>
+              <li>Kid-friendly meal mode</li>
+              <li>Shared grocery lists</li>
+              <li>Batch cooking planner</li>
+              <li>Priority support</li>
+            </ul>
+            <button class="btn btn-primary" onclick="showPage('onboarding')">Start 14-Day Free Trial</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== RECIPE MODAL ===== -->
+  <div class="modal-overlay" id="recipeModal">
+    <div class="modal" style="position:relative;">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div class="modal-img" id="modalImg"></div>
+      <div class="modal-body">
+        <h2 id="modalTitle"></h2>
+        <p class="recipe-subtitle" id="modalSubtitle"></p>
+        <div class="recipe-stats" id="modalStats"></div>
+        <div class="recipe-section">
+          <h3>Ingredients</h3>
+          <ul class="ingredient-list" id="modalIngredients"></ul>
+        </div>
+        <div class="recipe-section">
+          <h3>Instructions</h3>
+          <ol class="instruction-list" id="modalInstructions"></ol>
+        </div>
+        <div style="display:flex;gap:0.75rem;margin-top:1.5rem;flex-wrap:wrap;" id="modalActions">
+          <button class="btn btn-primary" onclick="startCookingMode()">Start Cooking</button>
+          <button class="btn btn-secondary" onclick="toast('Meal swapped!');closeModal();">Swap Meal</button>
+          <button class="btn btn-secondary" onclick="toast('Added to favorites!')">Save to Favorites</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TOAST ===== -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ===== DATA =====
+    const MEALS_DB = {
+      breakfast: [
+        { name: "Greek Yogurt Power Bowl", emoji: "&#129382;", time: 5, cal: 380, protein: 25, cost: 2.80, cuisine: "mediterranean",
+          ingredients: ["1 cup Greek yogurt", "1/4 cup granola", "1/2 cup mixed berries", "1 tbsp honey", "1 tbsp chia seeds"],
+          instructions: ["Add Greek yogurt to a bowl", "Top with granola and mixed berries", "Drizzle with honey", "Sprinkle chia seeds on top"] },
+        { name: "Avocado Toast with Eggs", emoji: "&#129361;", time: 10, cal: 420, protein: 18, cost: 3.20, cuisine: "american",
+          ingredients: ["2 slices sourdough bread", "1 ripe avocado", "2 eggs", "Salt, pepper, red pepper flakes", "Lemon juice"],
+          instructions: ["Toast the sourdough bread until golden", "Mash avocado with lemon juice, salt, and pepper", "Fry or poach the eggs to your liking", "Spread avocado on toast, top with eggs", "Season with red pepper flakes"] },
+        { name: "Overnight Oats", emoji: "&#127798;", time: 5, cal: 350, protein: 14, cost: 1.50, cuisine: "american",
+          ingredients: ["1/2 cup rolled oats", "1/2 cup milk", "1/4 cup Greek yogurt", "1 tbsp maple syrup", "1/2 banana, sliced"],
+          instructions: ["Mix oats, milk, yogurt, and maple syrup in a jar", "Refrigerate overnight (or at least 4 hours)", "Top with sliced banana before eating"] },
+        { name: "Veggie Scramble", emoji: "&#129370;", time: 12, cal: 310, protein: 22, cost: 2.50, cuisine: "american",
+          ingredients: ["3 eggs", "1/4 cup diced bell pepper", "1/4 cup spinach", "2 tbsp feta cheese", "1 tsp olive oil"],
+          instructions: ["Heat olive oil in a pan over medium heat", "Saut\u00e9 bell pepper for 2 minutes", "Add spinach and cook until wilted", "Pour in beaten eggs, scramble until set", "Top with feta cheese"] },
+        { name: "Banana Protein Pancakes", emoji: "&#129374;", time: 15, cal: 440, protein: 28, cost: 2.00, cuisine: "american",
+          ingredients: ["1 banana", "2 eggs", "1/4 cup protein powder", "1/4 cup oats", "Cooking spray"],
+          instructions: ["Blend banana, eggs, protein powder, and oats", "Heat a non-stick pan with cooking spray", "Pour small circles of batter", "Cook 2 min per side until golden", "Serve with a drizzle of maple syrup"] },
+        { name: "Smoothie Bowl", emoji: "&#127815;", time: 5, cal: 360, protein: 16, cost: 3.00, cuisine: "american",
+          ingredients: ["1 frozen banana", "1/2 cup frozen berries", "1/2 cup spinach", "1 scoop protein powder", "1/4 cup almond milk", "Toppings: granola, coconut, seeds"],
+          instructions: ["Blend frozen banana, berries, spinach, protein powder, and almond milk until thick", "Pour into a bowl", "Add toppings: granola, shredded coconut, seeds"] },
+        { name: "Breakfast Burrito", emoji: "&#127790;", time: 15, cal: 480, protein: 24, cost: 2.80, cuisine: "mexican",
+          ingredients: ["1 large tortilla", "2 eggs, scrambled", "1/4 cup black beans", "2 tbsp salsa", "2 tbsp shredded cheese", "1/4 avocado"],
+          instructions: ["Scramble eggs in a pan", "Warm tortilla in microwave for 15 seconds", "Layer beans, eggs, cheese, salsa, and avocado", "Roll tightly into a burrito", "Optional: toast in a dry pan for a crispy exterior"] },
+      ],
+      lunch: [
+        { name: "Mediterranean Chicken Bowl", emoji: "&#129367;", time: 20, cal: 520, protein: 38, cost: 4.50, cuisine: "mediterranean",
+          ingredients: ["6oz chicken breast", "1 cup cooked quinoa", "1/2 cup cucumber, diced", "1/4 cup cherry tomatoes", "2 tbsp hummus", "1 tbsp olive oil", "Lemon juice, oregano"],
+          instructions: ["Season chicken with oregano, salt, pepper", "Grill or pan-sear chicken 6 min per side", "Assemble bowl with quinoa base", "Add cucumber, tomatoes, and sliced chicken", "Top with hummus and drizzle olive oil + lemon"] },
+        { name: "Asian Chicken Lettuce Wraps", emoji: "&#129388;", time: 15, cal: 380, protein: 32, cost: 3.80, cuisine: "asian",
+          ingredients: ["8oz ground chicken", "1 tbsp soy sauce", "1 tbsp hoisin sauce", "1 tsp sesame oil", "1/4 cup water chestnuts, diced", "Butter lettuce leaves", "Green onions"],
+          instructions: ["Brown ground chicken in a skillet", "Add soy sauce, hoisin, and sesame oil", "Stir in water chestnuts", "Spoon mixture into lettuce cups", "Garnish with green onions"] },
+        { name: "Caprese Pasta Salad", emoji: "&#127837;", time: 15, cal: 450, protein: 18, cost: 3.50, cuisine: "italian",
+          ingredients: ["2 cups rotini pasta", "1 cup cherry tomatoes, halved", "8oz fresh mozzarella, cubed", "1/4 cup fresh basil", "2 tbsp balsamic glaze", "1 tbsp olive oil"],
+          instructions: ["Cook pasta al dente, drain and cool", "Toss with tomatoes, mozzarella, and torn basil", "Drizzle with olive oil and balsamic glaze", "Season with salt and pepper"] },
+        { name: "Black Bean Quesadilla", emoji: "&#129480;", time: 10, cal: 480, protein: 22, cost: 2.20, cuisine: "mexican",
+          ingredients: ["2 flour tortillas", "1/2 cup black beans", "1/2 cup shredded cheese", "1/4 avocado", "2 tbsp salsa", "Sour cream for serving"],
+          instructions: ["Spread beans and cheese on one tortilla", "Top with second tortilla", "Cook in a dry skillet 3 min per side until crispy", "Cut into wedges", "Serve with salsa, avocado, and sour cream"] },
+        { name: "Thai Peanut Noodle Bowl", emoji: "&#127836;", time: 20, cal: 510, protein: 20, cost: 3.00, cuisine: "thai",
+          ingredients: ["4oz rice noodles", "2 tbsp peanut butter", "1 tbsp soy sauce", "1 tsp sriracha", "1 lime, juiced", "1/2 cup shredded carrots", "1/4 cup edamame", "Cilantro, peanuts for topping"],
+          instructions: ["Cook rice noodles per package directions", "Whisk peanut butter, soy sauce, sriracha, and lime juice", "Toss noodles with sauce", "Top with carrots, edamame, cilantro, and crushed peanuts"] },
+        { name: "Turkey & Apple Wrap", emoji: "&#129386;", time: 5, cal: 390, protein: 28, cost: 3.50, cuisine: "american",
+          ingredients: ["1 large whole wheat wrap", "4oz deli turkey", "1/2 apple, thinly sliced", "1oz brie cheese", "Handful of arugula", "1 tsp honey mustard"],
+          instructions: ["Spread honey mustard on wrap", "Layer turkey, brie, apple slices, and arugula", "Roll tightly and cut in half"] },
+        { name: "Chicken Caesar Salad", emoji: "&#129367;", time: 15, cal: 460, protein: 35, cost: 4.00, cuisine: "american",
+          ingredients: ["6oz grilled chicken breast", "4 cups romaine lettuce", "1/4 cup parmesan shavings", "1/2 cup croutons", "2 tbsp Caesar dressing", "Lemon wedge"],
+          instructions: ["Grill or pan-sear chicken, slice thinly", "Toss romaine with Caesar dressing", "Top with chicken, parmesan, and croutons", "Squeeze lemon over the top"] },
+        { name: "Tomato Basil Soup + Grilled Cheese", emoji: "&#127858;", time: 20, cal: 520, protein: 19, cost: 3.20, cuisine: "american",
+          ingredients: ["1 can crushed tomatoes", "1/2 cup heavy cream", "2 cloves garlic", "Fresh basil", "2 slices sourdough", "2 slices cheddar", "1 tbsp butter"],
+          instructions: ["Saut\u00e9 garlic in olive oil 1 minute", "Add crushed tomatoes, simmer 10 minutes", "Stir in cream and torn basil, blend if desired", "Butter bread, add cheese, grill in skillet 3 min per side", "Serve soup with grilled cheese for dipping"] },
+      ],
+      dinner: [
+        { name: "Lemon Herb Roasted Chicken", emoji: "&#127831;", time: 45, cal: 580, protein: 45, cost: 5.50, cuisine: "american", leftover: true,
+          ingredients: ["4 chicken thighs", "2 lemons", "4 cloves garlic", "2 tbsp olive oil", "Fresh rosemary & thyme", "1lb baby potatoes", "Salt and pepper"],
+          instructions: ["Preheat oven to 425\u00b0F", "Toss potatoes with olive oil, salt, arrange in pan", "Season chicken with herbs, lemon zest, garlic", "Place chicken on top of potatoes", "Squeeze lemon juice over everything", "Roast 35-40 minutes until chicken is 165\u00b0F", "Rest 5 minutes before serving"] },
+        { name: "Chicken Tacos (from leftover chicken)", emoji: "&#127790;", time: 15, cal: 420, protein: 30, cost: 1.80, cuisine: "mexican", isLeftover: true,
+          ingredients: ["Leftover roasted chicken, shredded", "6 corn tortillas", "1/2 cup pico de gallo", "1 avocado, sliced", "1/4 cup cotija cheese", "Lime wedges", "Cilantro"],
+          instructions: ["Warm tortillas in a dry skillet", "Shred leftover chicken, warm in microwave", "Assemble tacos with chicken, pico, avocado", "Top with cotija and cilantro", "Squeeze lime juice over top"] },
+        { name: "One-Pot Pasta Primavera", emoji: "&#127837;", time: 25, cal: 480, protein: 18, cost: 3.50, cuisine: "italian",
+          ingredients: ["12oz penne pasta", "2 cups mixed vegetables (zucchini, bell pepper, cherry tomatoes)", "2 cloves garlic", "2 tbsp olive oil", "1/2 cup parmesan", "Fresh basil", "Red pepper flakes"],
+          instructions: ["Heat olive oil, saut\u00e9 garlic 1 minute", "Add vegetables, cook 5 minutes", "Add pasta and 4 cups water", "Bring to boil, reduce heat, cook until pasta is tender", "Stir in parmesan and basil", "Season to taste"] },
+        { name: "Teriyaki Salmon Bowl", emoji: "&#127843;", time: 25, cal: 550, protein: 40, cost: 6.50, cuisine: "japanese",
+          ingredients: ["2 salmon fillets", "3 tbsp soy sauce", "2 tbsp mirin", "1 tbsp honey", "2 cups cooked rice", "1 cup steamed broccoli", "1/2 avocado", "Sesame seeds"],
+          instructions: ["Mix soy sauce, mirin, and honey for teriyaki sauce", "Pan-sear salmon 4 min per side, skin-side first", "Pour sauce over salmon in last minute of cooking", "Serve over rice with broccoli and avocado", "Garnish with sesame seeds"] },
+        { name: "Beef Stir-Fry", emoji: "&#129379;", time: 20, cal: 520, protein: 35, cost: 5.00, cuisine: "asian", leftover: true,
+          ingredients: ["12oz flank steak, sliced thin", "2 cups broccoli florets", "1 bell pepper, sliced", "3 tbsp soy sauce", "1 tbsp cornstarch", "2 cloves garlic", "1 tbsp ginger", "2 cups cooked rice"],
+          instructions: ["Marinate steak in soy sauce and cornstarch 10 min", "Heat oil in wok or large skillet over high heat", "Stir-fry steak 2-3 minutes, remove", "Cook broccoli and pepper 3-4 minutes", "Add garlic and ginger, cook 30 seconds", "Return steak, toss everything together", "Serve over rice"] },
+        { name: "Loaded Fried Rice (from leftover stir-fry)", emoji: "&#127858;", time: 15, cal: 460, protein: 28, cost: 1.50, cuisine: "asian", isLeftover: true,
+          ingredients: ["Leftover stir-fry beef and vegetables", "2 cups day-old rice", "2 eggs", "2 tbsp soy sauce", "1 tsp sesame oil", "Green onions"],
+          instructions: ["Heat oil in wok over high heat", "Scramble eggs, push to side", "Add day-old rice, press flat to crisp", "Chop and add leftover stir-fry", "Season with soy sauce and sesame oil", "Top with green onions"] },
+        { name: "Creamy Tuscan Chicken", emoji: "&#127831;", time: 30, cal: 560, protein: 42, cost: 4.80, cuisine: "italian",
+          ingredients: ["4 chicken breasts", "1 cup sun-dried tomatoes", "2 cups fresh spinach", "1/2 cup heavy cream", "1/4 cup parmesan", "3 cloves garlic", "Italian seasoning"],
+          instructions: ["Season chicken with Italian seasoning, salt, pepper", "Sear chicken 6 min per side, remove and set aside", "Saut\u00e9 garlic and sun-dried tomatoes 2 minutes", "Add heavy cream and parmesan, stir until combined", "Add spinach, cook until wilted", "Return chicken to pan, simmer 5 minutes", "Serve with crusty bread or pasta"] },
+        { name: "Sheet Pan Fajitas", emoji: "&#127798;", time: 25, cal: 440, protein: 32, cost: 4.00, cuisine: "mexican",
+          ingredients: ["1lb chicken breast, sliced", "2 bell peppers, sliced", "1 onion, sliced", "2 tbsp fajita seasoning", "2 tbsp olive oil", "Tortillas, salsa, sour cream"],
+          instructions: ["Preheat oven to 425\u00b0F", "Toss chicken, peppers, onion with seasoning and oil", "Spread on a sheet pan in a single layer", "Roast 20 minutes, stirring halfway", "Serve in warm tortillas with toppings"] },
+        { name: "Mushroom Risotto", emoji: "&#127812;", time: 35, cal: 490, protein: 14, cost: 3.80, cuisine: "italian",
+          ingredients: ["1.5 cups arborio rice", "8oz mushrooms, sliced", "4 cups warm broth", "1/2 cup white wine", "1/2 cup parmesan", "2 tbsp butter", "1 shallot, diced", "Fresh thyme"],
+          instructions: ["Saut\u00e9 mushrooms until golden, set aside", "Cook shallot in butter 2 minutes", "Add rice, toast 1 minute", "Add wine, stir until absorbed", "Add broth one ladle at a time, stirring frequently", "After ~18 min when rice is creamy, stir in mushrooms", "Finish with parmesan and butter"] },
+        { name: "Honey Garlic Shrimp", emoji: "&#129424;", time: 15, cal: 380, protein: 34, cost: 5.50, cuisine: "asian",
+          ingredients: ["1lb shrimp, peeled", "3 tbsp honey", "3 cloves garlic, minced", "2 tbsp soy sauce", "1 tbsp butter", "Red pepper flakes", "Steamed jasmine rice"],
+          instructions: ["Melt butter in a skillet over medium-high heat", "Add shrimp, cook 2 min per side", "Add garlic, cook 30 seconds", "Pour in honey and soy sauce", "Toss until shrimp is glazed", "Serve over jasmine rice with steamed vegetables"] },
+      ]
+    };
+
+    const GROCERY_DATA = [
+      { aisle: "Produce", icon: "&#129382;", items: [
+        { name: "Baby spinach", qty: "5 oz bag", price: 2.99 },
+        { name: "Avocados", qty: "3", price: 3.50 },
+        { name: "Bell peppers (mixed)", qty: "4", price: 3.99 },
+        { name: "Cherry tomatoes", qty: "1 pint", price: 3.49 },
+        { name: "Lemons", qty: "3", price: 1.99 },
+        { name: "Broccoli crowns", qty: "2", price: 3.49 },
+        { name: "Yellow onion", qty: "1", price: 0.89 },
+        { name: "Garlic", qty: "1 head", price: 0.69 },
+        { name: "Fresh herbs (rosemary, thyme)", qty: "1 pack", price: 2.49 },
+        { name: "Bananas", qty: "1 bunch", price: 1.29 },
+        { name: "Mixed berries", qty: "12 oz", price: 4.49 },
+      ]},
+      { aisle: "Meat & Seafood", icon: "&#129385;", items: [
+        { name: "Chicken thighs (bone-in)", qty: "2 lbs", price: 5.99 },
+        { name: "Chicken breast", qty: "1.5 lbs", price: 7.49 },
+        { name: "Flank steak", qty: "1 lb", price: 9.99 },
+        { name: "Salmon fillets", qty: "2 fillets", price: 11.99 },
+        { name: "Shrimp (peeled)", qty: "1 lb", price: 8.99 },
+      ]},
+      { aisle: "Dairy & Eggs", icon: "&#129472;", items: [
+        { name: "Eggs (dozen)", qty: "1", price: 3.49 },
+        { name: "Greek yogurt", qty: "32 oz", price: 4.99 },
+        { name: "Parmesan cheese", qty: "4 oz", price: 3.99 },
+        { name: "Shredded Mexican blend", qty: "8 oz", price: 3.49 },
+        { name: "Heavy cream", qty: "1 pint", price: 3.49 },
+        { name: "Butter", qty: "1 stick", price: 1.99 },
+      ]},
+      { aisle: "Pantry", icon: "&#127856;", items: [
+        { name: "Penne pasta", qty: "1 lb", price: 1.49 },
+        { name: "Arborio rice", qty: "1 lb", price: 3.99 },
+        { name: "Jasmine rice", qty: "2 lbs", price: 3.49 },
+        { name: "Black beans (canned)", qty: "2 cans", price: 1.98 },
+        { name: "Soy sauce", qty: "1 bottle", price: 2.99 },
+        { name: "Honey", qty: "1 bottle", price: 4.49 },
+        { name: "Olive oil", qty: "already have", price: 0 },
+      ]},
+      { aisle: "Bakery & Bread", icon: "&#127838;", items: [
+        { name: "Sourdough bread", qty: "1 loaf", price: 4.49 },
+        { name: "Corn tortillas", qty: "1 pack", price: 2.49 },
+        { name: "Flour tortillas", qty: "1 pack", price: 3.29 },
+      ]},
+    ];
+
+    const PANTRY_DATA = [
+      { category: "Fridge", icon: "&#129482;", items: [
+        { name: "Milk (2%)", expiry: "Mar 12", status: "ok" },
+        { name: "Cheddar cheese", expiry: "Mar 20", status: "ok" },
+        { name: "Leftover rice", expiry: "Mar 10", status: "soon" },
+        { name: "Butter", expiry: "Apr 5", status: "ok" },
+        { name: "Salsa (opened)", expiry: "Mar 11", status: "soon" },
+      ]},
+      { category: "Freezer", icon: "&#129398;", items: [
+        { name: "Frozen berries", expiry: "Jun 2026", status: "ok" },
+        { name: "Ground turkey", expiry: "May 2026", status: "ok" },
+        { name: "Frozen broccoli", expiry: "Aug 2026", status: "ok" },
+        { name: "Ice cream", expiry: "Jul 2026", status: "ok" },
+      ]},
+      { category: "Pantry", icon: "&#127856;", items: [
+        { name: "Olive oil", expiry: "Dec 2026", status: "ok" },
+        { name: "Pasta (penne)", expiry: "Sep 2026", status: "ok" },
+        { name: "Canned tomatoes", expiry: "Feb 2027", status: "ok" },
+        { name: "Rice (jasmine)", expiry: "Jan 2027", status: "ok" },
+        { name: "Soy sauce", expiry: "Nov 2026", status: "ok" },
+        { name: "Quinoa", expiry: "Aug 2026", status: "ok" },
+        { name: "Peanut butter", expiry: "Mar 9", status: "expired" },
+        { name: "Honey", expiry: "never", status: "ok" },
+      ]},
+      { category: "Spices", icon: "&#127798;", items: [
+        { name: "Salt & Pepper", expiry: "never", status: "ok" },
+        { name: "Garlic powder", expiry: "Dec 2026", status: "ok" },
+        { name: "Cumin", expiry: "Oct 2026", status: "ok" },
+        { name: "Italian seasoning", expiry: "Jan 2027", status: "ok" },
+        { name: "Red pepper flakes", expiry: "Nov 2026", status: "ok" },
+        { name: "Paprika", expiry: "Mar 2026", status: "soon" },
+      ]},
+    ];
+
+    // ===== STATE =====
+    let currentPage = 'landing';
+    let currentStep = 1;
+    let weekOffset = 0;
+    let isSetUp = false;
+    let weeklyPlan = null;
+
+    // ===== PAGE NAVIGATION =====
+    function showPage(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + page).classList.add('active');
+      currentPage = page;
+
+      // Update nav
+      document.querySelectorAll('nav button').forEach(b => {
+        b.classList.toggle('active', b.dataset.page === page);
+      });
+
+      // Show/hide nav based on setup state
+      if (isSetUp) {
+        document.getElementById('mainNav').style.display = 'flex';
+        document.getElementById('headerActions').innerHTML = `
+          <button class="btn btn-ghost" onclick="toggleDarkMode()" title="Toggle dark mode">&#9790;</button>
+          <button class="btn btn-ghost" onclick="showPage('settings')">Settings</button>
+        `;
+      }
+    }
+
+    // ===== ONBOARDING =====
+    function nextStep(step) {
+      document.querySelectorAll('.onboarding-step').forEach(s => s.classList.remove('active'));
+      document.querySelector(`.onboarding-step[data-step="${step}"]`).classList.add('active');
+      currentStep = step;
+      document.getElementById('progressFill').style.width = (step * 25) + '%';
+    }
+
+    // Chip selection
+    document.querySelectorAll('.chip-group').forEach(group => {
+      group.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const field = group.dataset.field;
+          const multiSelect = ['allergies', 'meals', 'cuisines', 'kids'].includes(field);
+
+          if (multiSelect) {
+            chip.classList.toggle('selected');
+          } else {
+            group.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+            chip.classList.add('selected');
+          }
+        });
+      });
+    });
+
+    // ===== GENERATE PLAN =====
+    function generatePlan() {
+      showPage('generating');
+      const messages = [
+        "Analyzing your preferences...",
+        "Finding seasonal ingredients...",
+        "Optimizing for your budget...",
+        "Creating balanced meals...",
+        "Planning leftover repurposing...",
+        "Finalizing your meal plan..."
+      ];
+
+      let i = 0;
+      const interval = setInterval(() => {
+        i++;
+        if (i < messages.length) {
+          document.getElementById('genText').textContent = messages[i];
+        } else {
+          clearInterval(interval);
+          isSetUp = true;
+          buildWeeklyPlan();
+          renderMealPlan();
+          renderGroceryList();
+          renderPantry();
+          showPage('dashboard');
+        }
+      }, 600);
+    }
+
+    function regeneratePlan() {
+      generatePlan();
+    }
+
+    // ===== BUILD WEEKLY PLAN =====
+    function buildWeeklyPlan() {
+      const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      weeklyPlan = [];
+
+      const usedDinners = new Set();
+      const usedLunches = new Set();
+      const usedBreakfasts = new Set();
+
+      for (let d = 0; d < 7; d++) {
+        const day = { name: days[d], meals: {} };
+
+        // Breakfast
+        const availBreak = MEALS_DB.breakfast.filter((_, i) => !usedBreakfasts.has(i));
+        const bIdx = availBreak.length > 0
+          ? MEALS_DB.breakfast.indexOf(availBreak[Math.floor(Math.random() * availBreak.length)])
+          : Math.floor(Math.random() * MEALS_DB.breakfast.length);
+        usedBreakfasts.add(bIdx);
+        day.meals.breakfast = MEALS_DB.breakfast[bIdx];
+
+        // Lunch
+        const availLunch = MEALS_DB.lunch.filter((_, i) => !usedLunches.has(i));
+        const lIdx = availLunch.length > 0
+          ? MEALS_DB.lunch.indexOf(availLunch[Math.floor(Math.random() * availLunch.length)])
+          : Math.floor(Math.random() * MEALS_DB.lunch.length);
+        usedLunches.add(lIdx);
+        day.meals.lunch = MEALS_DB.lunch[lIdx];
+
+        // Dinner — check for leftover pairing
+        let dinner;
+        const LEFTOVER_PAIRS = {
+          "Lemon Herb Roasted Chicken": "Chicken Tacos (from leftover chicken)",
+          "Beef Stir-Fry": "Loaded Fried Rice (from leftover stir-fry)"
+        };
+        if (d > 0) {
+          const prevDinner = weeklyPlan[d-1].meals.dinner;
+          const leftoverName = LEFTOVER_PAIRS[prevDinner.name];
+          if (leftoverName && !usedDinners.has(leftoverName)) {
+            dinner = MEALS_DB.dinner.find(m => m.name === leftoverName);
+          }
+        }
+        if (!dinner) {
+          const available = MEALS_DB.dinner.filter(m => !usedDinners.has(m.name) && !m.isLeftover);
+          if (available.length > 0) {
+            dinner = available[Math.floor(Math.random() * available.length)];
+          } else {
+            // Fallback: pick any non-leftover
+            const fallback = MEALS_DB.dinner.filter(m => !m.isLeftover);
+            dinner = fallback[Math.floor(Math.random() * fallback.length)];
+          }
+        }
+        usedDinners.add(dinner.name);
+        day.meals.dinner = dinner;
+
+        weeklyPlan.push(day);
+      }
+    }
+
+    // ===== RENDER MEAL PLAN =====
+    function renderMealPlan() {
+      const grid = document.getElementById('mealPlanGrid');
+      const today = new Date();
+      const dayOfWeek = (today.getDay() + 6) % 7; // Monday = 0
+
+      let html = '';
+      weeklyPlan.forEach((day, i) => {
+        const isToday = i === dayOfWeek && weekOffset === 0;
+        const date = new Date(today);
+        date.setDate(date.getDate() - dayOfWeek + i + (weekOffset * 7));
+
+        html += `<div class="day-column">
+          <div class="day-header ${isToday ? 'today' : ''}">
+            <div class="day-name">${day.name}</div>
+            <div class="day-date">${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
+          </div>`;
+
+        ['breakfast', 'lunch', 'dinner'].forEach(type => {
+          const meal = day.meals[type];
+          if (meal) {
+            const tags = [];
+            if (meal.isLeftover) tags.push('<span class="meal-tag leftover">Leftover</span>');
+            if (meal.time <= 15) tags.push('<span class="meal-tag quick">Quick</span>');
+            if (meal.cost < 3) tags.push('<span class="meal-tag budget">Budget</span>');
+
+            html += `<div class="meal-slot" data-meal-type="${type}" data-day="${i}" onclick="openRecipeByIndex('${type}', ${i})">
+              <div class="meal-type">${type}</div>
+              <div class="meal-name">${meal.emoji} ${meal.name}</div>
+              <div class="meal-meta">${meal.time}min &middot; ${meal.cal} cal &middot; $${meal.cost.toFixed(2)}</div>
+              <div class="meal-tags">${tags.join('')}</div>
+            </div>`;
+          }
+        });
+
+        html += '</div>';
+      });
+
+      grid.innerHTML = html;
+      updateWeekLabel();
+      updateSummaryCards();
+      saveState();
+    }
+
+    function changeWeek(dir) {
+      weekOffset += dir;
+      buildWeeklyPlan();
+      renderMealPlan();
+    }
+
+    function updateWeekLabel() {
+      const label = weekOffset === 0 ? 'This Week' : weekOffset === 1 ? 'Next Week' : weekOffset === -1 ? 'Last Week' : `Week of ${getWeekStart()}`;
+      document.getElementById('weekLabel').textContent = label;
+    }
+
+    function getWeekStart() {
+      const d = new Date();
+      d.setDate(d.getDate() + weekOffset * 7 - (d.getDay() + 6) % 7);
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    // ===== RENDER GROCERY LIST =====
+    function renderGroceryList() {
+      const list = document.getElementById('groceryList');
+      let totalItems = 0;
+      GROCERY_DATA.forEach(a => totalItems += a.items.length);
+
+      let html = `<div class="grocery-header">
+        <h3>${totalItems} items for this week</h3>
+        <span style="color:var(--text-light);font-size:0.85rem;">Organized by aisle</span>
+      </div>`;
+
+      GROCERY_DATA.forEach(aisle => {
+        html += `<div class="aisle-section">
+          <div class="aisle-header">
+            <span class="aisle-icon">${aisle.icon}</span>
+            ${aisle.aisle}
+            <span class="count">${aisle.items.length}</span>
+          </div>`;
+
+        aisle.items.forEach((item, i) => {
+          const id = `item-${aisle.aisle}-${i}`;
+          html += `<div class="grocery-item" id="${id}">
+            <input type="checkbox" onchange="toggleItem('${id}')">
+            <span class="item-name">${item.name}</span>
+            <span class="item-qty">${item.qty}</span>
+            <span class="item-price">${item.price > 0 ? '$' + item.price.toFixed(2) : '—'}</span>
+          </div>`;
+        });
+
+        html += '</div>';
+      });
+
+      list.innerHTML = html;
+    }
+
+    function toggleItem(id) {
+      document.getElementById(id).classList.toggle('checked');
+    }
+
+    // ===== RENDER PANTRY =====
+    function renderPantry() {
+      const grid = document.getElementById('pantryGrid');
+      let html = '';
+
+      PANTRY_DATA.forEach(cat => {
+        html += `<div class="pantry-category">
+          <h4><span>${cat.icon}</span> ${cat.category}</h4>`;
+
+        cat.items.forEach(item => {
+          const statusClass = item.status === 'ok' ? 'expiry-ok' : item.status === 'soon' ? 'expiry-soon' : 'expiry-expired';
+          const statusLabel = item.status === 'expired' ? 'Expired!' : item.status === 'soon' ? 'Use soon' : item.expiry === 'never' ? 'No expiry' : item.expiry;
+
+          html += `<div class="pantry-item">
+            <span class="pantry-item-name">${item.name}</span>
+            <span class="pantry-item-expiry ${statusClass}">${statusLabel}</span>
+          </div>`;
+        });
+
+        html += `<div class="add-pantry-input">
+          <input type="text" placeholder="Add item...">
+          <button class="btn btn-primary btn-sm" onclick="toast('Item added!')">Add</button>
+        </div></div>`;
+      });
+
+      grid.innerHTML = html;
+    }
+
+    // ===== DYNAMIC SUMMARY CARDS =====
+    function updateSummaryCards() {
+      if (!weeklyPlan) return;
+      let totalCost = 0, totalCal = 0, totalMeals = 0;
+      weeklyPlan.forEach(day => {
+        ['breakfast', 'lunch', 'dinner'].forEach(type => {
+          const meal = day.meals[type];
+          if (meal) {
+            totalCost += meal.cost;
+            totalCal += meal.cal;
+            totalMeals++;
+          }
+        });
+      });
+      const avgCal = Math.round(totalCal / 7);
+      const budget = 100;
+      const under = budget - totalCost;
+      document.querySelector('.summary-card.budget .value').textContent = '$' + totalCost.toFixed(0);
+      document.querySelector('.summary-card.budget .sub').textContent = under >= 0 ? `$${under.toFixed(0)} under budget` : `$${Math.abs(under).toFixed(0)} over budget`;
+      document.querySelector('.summary-card.calories .value').textContent = avgCal.toLocaleString();
+      document.querySelector('.summary-card.meals .value').textContent = totalMeals;
+      document.querySelector('.summary-card.meals .sub').textContent = `7 days \u00d7 3 meals`;
+    }
+
+    // ===== RECIPE MODAL =====
+    let currentModalMeal = null;
+    let servingMultiplier = 1;
+
+    function openRecipeByIndex(type, dayIndex) {
+      const meal = weeklyPlan[dayIndex].meals[type];
+      if (meal) openRecipe(meal);
+    }
+
+    function openRecipe(meal) {
+      currentModalMeal = meal;
+      servingMultiplier = 1;
+      const modal = document.getElementById('recipeModal');
+      document.getElementById('modalImg').innerHTML = `<span style="font-size:4rem">${meal.emoji}</span>`;
+      document.getElementById('modalTitle').textContent = meal.name;
+
+      const isFav = favorites.includes(meal.name);
+      const difficulty = meal.time <= 15 ? 'Easy' : meal.time <= 30 ? 'Medium' : 'Advanced';
+      const diffColor = meal.time <= 15 ? '#22c55e' : meal.time <= 30 ? '#f97316' : '#ef4444';
+      document.getElementById('modalSubtitle').innerHTML = `${meal.cuisine.charAt(0).toUpperCase() + meal.cuisine.slice(1)} cuisine &middot; <span style="color:${diffColor};font-weight:600;">${difficulty}</span>`;
+
+      document.getElementById('modalStats').innerHTML = `
+        <div class="recipe-stat"><div class="stat-value">${meal.time}m</div><div class="stat-label">Cook Time</div></div>
+        <div class="recipe-stat"><div class="stat-value">${meal.cal}</div><div class="stat-label">Calories</div></div>
+        <div class="recipe-stat"><div class="stat-value">${meal.protein}g</div><div class="stat-label">Protein</div></div>
+        <div class="recipe-stat"><div class="stat-value">$${meal.cost.toFixed(2)}</div><div class="stat-label">Est. Cost</div></div>
+        <div class="recipe-stat">
+          <div class="stat-value" style="display:flex;align-items:center;gap:4px;">
+            <button class="btn btn-ghost btn-sm" onclick="adjustServings(-1)" style="padding:2px 6px;font-size:1rem;">-</button>
+            <span id="servingCount">1</span>x
+            <button class="btn btn-ghost btn-sm" onclick="adjustServings(1)" style="padding:2px 6px;font-size:1rem;">+</button>
+          </div>
+          <div class="stat-label">Servings</div>
+        </div>
+      `;
+
+      renderIngredients(meal);
+      document.getElementById('modalInstructions').innerHTML = meal.instructions.map(inst => `<li>${inst}</li>`).join('');
+
+      // Update buttons
+      document.getElementById('modalActions').innerHTML = `
+        <button class="btn btn-primary" onclick="startCookingMode()">Start Cooking</button>
+        <button class="btn btn-secondary" onclick="toast('Meal swapped!');closeModal();">Swap Meal</button>
+        <button class="btn ${isFav ? 'btn-accent' : 'btn-secondary'}" onclick="toggleFavorite('${meal.name.replace(/'/g, "\\'")}')">${isFav ? 'Favorited' : 'Save to Favorites'}</button>
+      `;
+
+      modal.classList.add('show');
+    }
+
+    function renderIngredients(meal) {
+      document.getElementById('modalIngredients').innerHTML = meal.ingredients.map(ing => {
+        if (servingMultiplier === 1) return `<li>${ing}</li>`;
+        // Try to scale numeric quantities
+        return `<li>${ing.replace(/^([\d\/\.]+)/, (match) => {
+          const num = eval(match);
+          return (num * servingMultiplier).toFixed(num * servingMultiplier % 1 === 0 ? 0 : 1);
+        })}</li>`;
+      }).join('');
+    }
+
+    function adjustServings(dir) {
+      servingMultiplier = Math.max(1, servingMultiplier + dir);
+      document.getElementById('servingCount').textContent = servingMultiplier;
+      if (currentModalMeal) renderIngredients(currentModalMeal);
+    }
+
+    // ===== COOKING MODE =====
+    let cookingStep = 0;
+
+    function startCookingMode() {
+      if (!currentModalMeal) return;
+      cookingStep = 0;
+      const meal = currentModalMeal;
+      const modal = document.querySelector('.modal');
+      modal.innerHTML = `
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div style="padding:2rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+            <h2 style="font-size:1.2rem;">${meal.emoji} ${meal.name}</h2>
+            <span style="font-size:0.8rem;color:var(--text-light);">Cooking Mode</span>
+          </div>
+          <div style="text-align:center;padding:2rem 0;">
+            <div style="font-size:0.8rem;color:var(--text-lighter);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem;">
+              Step <span id="cookStepNum">1</span> of ${meal.instructions.length}
+            </div>
+            <div class="progress-bar" style="margin-bottom:1.5rem;">
+              <div class="progress-bar-fill" id="cookProgress" style="width:${100/meal.instructions.length}%"></div>
+            </div>
+            <p id="cookStepText" style="font-size:1.3rem;line-height:1.6;font-weight:500;min-height:80px;">${meal.instructions[0]}</p>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:2rem;">
+            <button class="btn btn-secondary" id="cookPrev" onclick="cookingNav(-1)" disabled>Previous</button>
+            <button class="btn btn-primary btn-lg" id="cookNext" onclick="cookingNav(1)">Next Step</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function cookingNav(dir) {
+      const meal = currentModalMeal;
+      cookingStep = Math.max(0, Math.min(meal.instructions.length - 1, cookingStep + dir));
+      document.getElementById('cookStepNum').textContent = cookingStep + 1;
+      document.getElementById('cookStepText').textContent = meal.instructions[cookingStep];
+      document.getElementById('cookProgress').style.width = ((cookingStep + 1) / meal.instructions.length * 100) + '%';
+      document.getElementById('cookPrev').disabled = cookingStep === 0;
+      const nextBtn = document.getElementById('cookNext');
+      if (cookingStep === meal.instructions.length - 1) {
+        nextBtn.textContent = 'Done!';
+        nextBtn.onclick = () => { toast('Meal complete! Enjoy!'); closeModal(); };
+      } else {
+        nextBtn.textContent = 'Next Step';
+        nextBtn.onclick = () => cookingNav(1);
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('recipeModal').classList.remove('show');
+      // Restore modal structure if cooking mode changed it
+      setTimeout(() => {
+        const modal = document.querySelector('#recipeModal .modal');
+        if (!document.getElementById('modalTitle')) {
+          modal.innerHTML = `
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-img" id="modalImg"></div>
+            <div class="modal-body">
+              <h2 id="modalTitle"></h2>
+              <p class="recipe-subtitle" id="modalSubtitle"></p>
+              <div class="recipe-stats" id="modalStats"></div>
+              <div class="recipe-section"><h3>Ingredients</h3><ul class="ingredient-list" id="modalIngredients"></ul></div>
+              <div class="recipe-section"><h3>Instructions</h3><ol class="instruction-list" id="modalInstructions"></ol></div>
+              <div style="display:flex;gap:0.75rem;margin-top:1.5rem;flex-wrap:wrap;" id="modalActions"></div>
+            </div>
+          `;
+        }
+      }, 300);
+    }
+
+    document.getElementById('recipeModal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('recipeModal')) closeModal();
+    });
+
+    // ===== FAVORITES =====
+    let favorites = JSON.parse(localStorage.getItem('platepal_favorites') || '[]');
+
+    function toggleFavorite(name) {
+      const idx = favorites.indexOf(name);
+      if (idx >= 0) {
+        favorites.splice(idx, 1);
+        toast('Removed from favorites');
+      } else {
+        favorites.push(name);
+        toast('Added to favorites!');
+      }
+      localStorage.setItem('platepal_favorites', JSON.stringify(favorites));
+      if (currentModalMeal) openRecipe(currentModalMeal);
+      renderFavorites();
+    }
+
+    function renderFavorites() {
+      const grid = document.getElementById('favoritesGrid');
+      if (!grid) return;
+      if (favorites.length === 0) {
+        grid.innerHTML = '<p style="color:var(--text-light);text-align:center;padding:2rem;">No favorites yet. Click the heart on any recipe to save it here.</p>';
+        return;
+      }
+      const allMeals = [...MEALS_DB.breakfast, ...MEALS_DB.lunch, ...MEALS_DB.dinner];
+      let html = '';
+      favorites.forEach((name, fi) => {
+        const meal = allMeals.find(m => m.name === name);
+        if (meal) {
+          window['_fav_' + fi] = meal;
+          html += `<div class="pantry-category" style="cursor:pointer;" onclick="openRecipe(window['_fav_${fi}'])">
+            <h4>${meal.emoji} ${meal.name}</h4>
+            <div style="font-size:0.8rem;color:var(--text-light);">${meal.time}min &middot; ${meal.cal} cal &middot; $${meal.cost.toFixed(2)}</div>
+          </div>`;
+        }
+      });
+      grid.innerHTML = html;
+    }
+
+    // ===== DARK MODE =====
+    let darkMode = localStorage.getItem('platepal_dark') === 'true';
+
+    function toggleDarkMode() {
+      darkMode = !darkMode;
+      localStorage.setItem('platepal_dark', darkMode);
+      applyDarkMode();
+    }
+
+    function applyDarkMode() {
+      if (darkMode) {
+        document.documentElement.style.setProperty('--bg', '#0f172a');
+        document.documentElement.style.setProperty('--bg-card', '#1e293b');
+        document.documentElement.style.setProperty('--text', '#e2e8f0');
+        document.documentElement.style.setProperty('--text-light', '#94a3b8');
+        document.documentElement.style.setProperty('--text-lighter', '#64748b');
+        document.documentElement.style.setProperty('--border', '#334155');
+        document.body.style.colorScheme = 'dark';
+      } else {
+        document.documentElement.style.setProperty('--bg', '#fafaf9');
+        document.documentElement.style.setProperty('--bg-card', '#ffffff');
+        document.documentElement.style.setProperty('--text', '#1e293b');
+        document.documentElement.style.setProperty('--text-light', '#64748b');
+        document.documentElement.style.setProperty('--text-lighter', '#94a3b8');
+        document.documentElement.style.setProperty('--border', '#e2e8f0');
+        document.body.style.colorScheme = 'light';
+      }
+    }
+
+    applyDarkMode();
+
+    // ===== PRINT GROCERY LIST =====
+    function printGroceryList() {
+      let text = 'GROCERY LIST - PlatePal\\n========================\\n\\n';
+      GROCERY_DATA.forEach(aisle => {
+        text += aisle.aisle.toUpperCase() + '\\n';
+        aisle.items.forEach(item => {
+          text += `  [ ] ${item.name} — ${item.qty}${item.price > 0 ? ' ($' + item.price.toFixed(2) + ')' : ''}\\n`;
+        });
+        text += '\\n';
+      });
+      const w = window.open('', '_blank');
+      w.document.write('<pre style="font-family:monospace;font-size:14px;padding:2rem;">' + text + '</pre>');
+      w.document.title = 'Grocery List - PlatePal';
+      w.print();
+    }
+
+    // ===== LOCALSTORAGE PERSISTENCE =====
+    function saveState() {
+      if (isSetUp && weeklyPlan) {
+        localStorage.setItem('platepal_setup', 'true');
+        localStorage.setItem('platepal_plan', JSON.stringify(weeklyPlan));
+        localStorage.setItem('platepal_weekOffset', weekOffset);
+      }
+    }
+
+    function loadState() {
+      if (localStorage.getItem('platepal_setup') === 'true') {
+        const saved = localStorage.getItem('platepal_plan');
+        if (saved) {
+          weeklyPlan = JSON.parse(saved);
+          weekOffset = parseInt(localStorage.getItem('platepal_weekOffset') || '0');
+          isSetUp = true;
+          renderMealPlan();
+          renderGroceryList();
+          renderPantry();
+          renderFavorites();
+          showPage('dashboard');
+        }
+      }
+    }
+
+    // ===== COPY GROCERY LIST =====
+    function copyGroceryList() {
+      let text = '';
+      GROCERY_DATA.forEach(aisle => {
+        text += aisle.aisle.toUpperCase() + '\n';
+        aisle.items.forEach(item => {
+          text += `  - ${item.name} (${item.qty})\n`;
+        });
+        text += '\n';
+      });
+      navigator.clipboard.writeText(text).then(() => toast('List copied to clipboard!'));
+    }
+
+    // ===== TOAST =====
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // ===== KEYBOARD =====
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // ===== INIT =====
+    loadState();
+  </script>
+</body>
+</html>
